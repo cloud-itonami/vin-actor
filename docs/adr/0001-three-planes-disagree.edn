@@ -1,0 +1,108 @@
+[{:db/id -1
+  :adr/id "adr-0001-vin-actor-three-planes-disagree"
+  :adr/title "ADR-0001: vin-actor の 3 面は一致していない — 記録し、勝手に一致させない"
+  :adr/status "accepted"
+  :adr/doc_type "adr"
+  :adr/date "2026-09-03"
+  :adr/deciders ["Jun Kawasaki (+ Claude)"]
+  :adr/topic "vin-actor-three-planes-disagree"
+  :adr/related ["adr-2608052000-itonami-maturity-axes"
+                "adr-2608080000-itonami-maturity-improve-loop"
+                "adr-0001-intel-actor-three-planes-disagree"]
+  :adr/supersedes []
+  :adr/superseded_by []
+  :adr/repos ["cloud-itonami/vin-actor"]
+  :adr/authoritative true
+  :adr/authoritative_for ["vin-actor の README が 3 面の不一致をどう扱うか（記録するが reconcile しない）"]
+  :adr/last_verified "2026-09-03"
+  :adr/body "# ADR-0001: vin-actor の 3 面は一致していない — 記録し、勝手に一致させない
+
+**Status**: accepted
+**Date**: 2026-09-03
+**Measured at**: commit 4efacd9
+
+## Context
+
+vin-actor は小さな repo（測定時点の 4efacd9 で 10 ファイル、この ADR と README と
+quickstart を加えて 13）だが、この actor が何であるかを述べる面が 4 つある:
+
+1. `src/vin/murakumo.cljc` — 実際に plan を作る境界
+2. `actor-manifest.jsonld` — actor の宣言（capability / trigger / runtime）
+3. `.well-known/did.json` — DID document
+4. `CLAUDE.md` — 配備されたプラットフォームの散文
+
+2026-09-03 に 4 面を実測したところ、次の 3 点で食い違っていた。
+
+### 1. actor DID が 2 つある
+
+- `.well-known/did.json` の `id` は `did:web:etzhayyim.com:actor:vin`
+- `actor-manifest.jsonld` の `@id` と `murakumo.cljc` の `actor-did` は
+  `did:web:vin.etzhayyim.com`
+
+原因は履歴に残っている。commit `ba1f9ac`（chore(identity): migrate did:web to
+etzhayyim.com scheme、2026-07-02）は **`.well-known/did.json` だけ**を 4 行
+書き換えており、source も manifest も `CLAUDE.md` も移行されていない。旧値は
+`alsoKnownAs` に handle `at://vin.etzhayyim.com` として残っている。
+
+これは実害のある食い違いである。`records-for` が全 record に押す `:actorDid` は
+source 側の値なので、**DID document が名乗っていない主体に帰属した record を
+出し続ける**。
+
+### 2. collection 名が 1 つも交差しない
+
+- 境界が emit するのは `com.etzhayyim.vin.<小文字化した cell key>` が 15 本
+- manifest が declare するのは `com.etzhayyim.apps.<app>.<camelCase>` が 10 本
+- 交差は **0**
+
+`vehicle` cell に限れば違いは `apps.` セグメント 1 つだけで、emit 側が
+`com.etzhayyim.vin.vehicle`、declare 側が `com.etzhayyim.apps.vin.vehicle`。
+正しい名前はデータの中に在る —— `:legacy-cell` が
+`com-etzhayyim-apps-vin-vehicle` として保存している —— が、`collection` 関数は
+それを読まずに cell key から別の名前を導出している。
+
+結果として、`:ready` な plan は **どの declared trigger も subscribe していない
+collection を宛先にしている**。
+
+### 3. runtime と UI の記述が割れている
+
+- manifest: `runtime` = `k8s-langserver`、`uiType` = `yoro`
+- `CLAUDE.md`: Runtime = Single Worker、UI = appview (Protocol Canvas card UI)
+
+## Decision
+
+**記録する。reconcile しない。**
+
+この 3 点はいずれも 1 行で「直せて」しまう（prefix を足す、DID を揃える、
+散文を書き換える）。だが **どの面が正本かは owner の判断**であって、docs を書く
+反復が決めてよいことではない:
+
+- DID を揃えるなら、どちらへ揃えるかで公開済み DID document か、
+  既に発行された record の帰属か、どちらかが動く。
+- collection を揃えるなら、`:ready` な plan の宛先が変わる —— これは
+  この repo の**振る舞い**の変更であって、docs の変更ではない。
+- `CLAUDE.md` は上流デプロイの説明かもしれず、その場合 manifest と食い違って
+  いること自体は誤りではない。
+
+したがってこの反復では、README と `docs/operator-quickstart.md` に
+**測った値と測り方**を書き、直さない。
+
+## Consequences
+
+- README は「この actor は配線済み」とは書かない。3 面表を持ち、交差 0 を明記する。
+- quickstart §5 に**再測定コマンド**が入る。次に読む者は README を信用せずに
+  測り直せる。
+- その検査は**両方向で確かめてある**。`:collections` を `:legacy-cell` から
+  導出した写しに対して同じコマンドを流すと `intersection 10` を印字する
+  （2026-09-03 実測）。つまり `intersection 0` は定数ではなく測定値である。
+  cell key から regex で名前を組み立て直す実装だと、この検査は**何を直しても
+  0 を返し続ける** —— 落ちない検査は劇場、という規則の実例。
+- 誰かが面を揃えたら、この ADR と quickstart §5 を同時に更新する。
+  黙って揃えると、README が理由なく古くなる。
+
+## Alternatives considered
+
+- **collection prefix を直す** —— 1 行で済むが、`:ready` plan の宛先が変わる
+  ので docs 反復の範囲外。振る舞いの変更として別途起票する。
+- **DID を揃える** —— 公開済み DID document か record の帰属が動く。owner 判断。
+- **黙っておく** —— 却下。未測定を 0 として蓄積するのと同じで、次に読む者が
+  『配線済み』と誤読する。実際 `CLAUDE.md` だけを読むとそう読める。"}]
