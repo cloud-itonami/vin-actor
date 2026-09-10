@@ -16,8 +16,8 @@ number) and the role, but not the shape: nothing here decodes a VIN.
 
 | path | what it is |
 |---|---|
-| `src/vin/murakumo.cljc` | the only implementation — one namespace, `vin.murakumo` |
-| `test/vin/murakumo_test.cljc` | its contract tests (9 tests / 213 assertions) |
+| `src/vin/murakumo.kotoba` | the only implementation — one namespace, `vin.murakumo` |
+| `test/vin/murakumo_test.kotoba` | its contract tests (9 tests / 213 assertions) |
 | `deps.edn` | `:test` (cognitect test-runner) / `:lint` (clj-kondo) |
 | `actor-manifest.jsonld` | actor declaration — capabilities, triggers, runtime, pipelines |
 | `.well-known/did.json` | the published DID document |
@@ -68,7 +68,7 @@ See [`docs/adr/0001-three-planes-disagree.edn`](docs/adr/0001-three-planes-disag
 for the decision to record rather than reconcile, and §5 of the quickstart for
 the commands that re-measure each row.
 
-| Question | `src/vin/murakumo.cljc` | `actor-manifest.jsonld` | `.well-known/did.json` | `CLAUDE.md` |
+| Question | `src/vin/murakumo.kotoba` | `actor-manifest.jsonld` | `.well-known/did.json` | `CLAUDE.md` |
 |---|---|---|---|---|
 | actor DID | `did:web:vin.etzhayyim.com` | same | **`did:web:etzhayyim.com:actor:vin`** | same as source |
 | runtime | (none) | `k8s-langserver` | — | **`Single Worker`** |
