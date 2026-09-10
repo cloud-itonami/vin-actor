@@ -26,7 +26,7 @@
 vin-actor は小さな repo（測定時点の 4efacd9 で 10 ファイル、この ADR と README と
 quickstart を加えて 13）だが、この actor が何であるかを述べる面が 4 つある:
 
-1. `src/vin/murakumo.cljc` — 実際に plan を作る境界
+1. `src/vin/murakumo.kotoba` — 実際に plan を作る境界
 2. `actor-manifest.jsonld` — actor の宣言（capability / trigger / runtime）
 3. `.well-known/did.json` — DID document
 4. `CLAUDE.md` — 配備されたプラットフォームの散文

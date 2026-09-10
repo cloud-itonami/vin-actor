@@ -121,7 +121,7 @@ clojure -M:lint
 **Measured — exit 0. The one line that must match is the warning:**
 
 ```
-src/vin/murakumo.cljc:159:14: warning: unused binding input
+src/vin/murakumo.kotoba:159:14: warning: unused binding input
 linting took <varies>, errors: 0, warnings: 1
 ```
 
@@ -183,7 +183,7 @@ node -e '
 const fs=require("fs");
 const did=JSON.parse(fs.readFileSync(".well-known/did.json","utf8")).id;
 const mid=JSON.parse(fs.readFileSync("actor-manifest.jsonld","utf8"))["@id"];
-const src=fs.readFileSync("src/vin/murakumo.cljc","utf8")
+const src=fs.readFileSync("src/vin/murakumo.kotoba","utf8")
             .match(/\(def actor-did\s+"([^"]+)"/)[1];
 console.log("did.json  id      :", did);
 console.log("manifest  @id     :", mid);
