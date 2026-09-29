@@ -22,7 +22,7 @@ number) and the role, but not the shape: nothing here decodes a VIN.
 | `actor-manifest.jsonld` | actor declaration — capabilities, triggers, runtime, pipelines |
 | `.well-known/did.json` | the published DID document |
 | `storage-profile.edn` | `:kotoba/local-agent-kagi-chunks-v1` |
-| `CLAUDE.md` | **describes the deployed platform, which does not live here** |
+| `AGENTS.md` | **describes the deployed platform, which does not live here** |
 | `NOTICE` | Apache-2.0 + etzhayyim Charter Compliance Rider |
 | `.gitignore`, `.nojekyll` | housekeeping |
 
@@ -68,7 +68,7 @@ See [`docs/adr/0001-three-planes-disagree.edn`](docs/adr/0001-three-planes-disag
 for the decision to record rather than reconcile, and §5 of the quickstart for
 the commands that re-measure each row.
 
-| Question | `src/vin/murakumo.kotoba` | `actor-manifest.jsonld` | `.well-known/did.json` | `CLAUDE.md` |
+| Question | `src/vin/murakumo.kotoba` | `actor-manifest.jsonld` | `.well-known/did.json` | `AGENTS.md` |
 |---|---|---|---|---|
 | actor DID | `did:web:vin.etzhayyim.com` | same | **`did:web:etzhayyim.com:actor:vin`** | same as source |
 | runtime | (none) | `k8s-langserver` | — | **`Single Worker`** |
@@ -90,12 +90,12 @@ this README states it instead of describing the actor as wired.
 The DID divergence has a traceable cause: commit `ba1f9ac`
 (*chore(identity): migrate did:web to etzhayyim.com scheme*, 2026-07-02)
 changed `.well-known/did.json` **and nothing else** — four lines in one file.
-The source, the manifest and `CLAUDE.md` were never migrated with it. The old
+The source, the manifest and `AGENTS.md` were never migrated with it. The old
 value survives in `alsoKnownAs` as the handle `at://vin.etzhayyim.com`.
 
-## What CLAUDE.md describes that is not here
+## What AGENTS.md describes that is not here
 
-`CLAUDE.md` documents a deployed vehicle-intelligence platform: a role-based DID
+`AGENTS.md` documents a deployed vehicle-intelligence platform: a role-based DID
 hierarchy of ~40,000 WMI codes, a SQL graph with 13 node labels, 12 MCP
 commands (`decode_vin`, `lookup_plate`, `collect_recall`, …), seed cron
 schedules, WIT exports, a production-topology extension and a max-flow path

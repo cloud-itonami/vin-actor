@@ -29,7 +29,7 @@ quickstart を加えて 13）だが、この actor が何であるかを述べ�
 1. `src/vin/murakumo.kotoba` — 実際に plan を作る境界
 2. `actor-manifest.jsonld` — actor の宣言（capability / trigger / runtime）
 3. `.well-known/did.json` — DID document
-4. `CLAUDE.md` — 配備されたプラットフォームの散文
+4. `AGENTS.md` — 配備されたプラットフォームの散文
 
 2026-09-03 に 4 面を実測したところ、次の 3 点で食い違っていた。
 
@@ -41,7 +41,7 @@ quickstart を加えて 13）だが、この actor が何であるかを述べ�
 
 原因は履歴に残っている。commit `ba1f9ac`（chore(identity): migrate did:web to
 etzhayyim.com scheme、2026-07-02）は **`.well-known/did.json` だけ**を 4 行
-書き換えており、source も manifest も `CLAUDE.md` も移行されていない。旧値は
+書き換えており、source も manifest も `AGENTS.md` も移行されていない。旧値は
 `alsoKnownAs` に handle `at://vin.etzhayyim.com` として残っている。
 
 これは実害のある食い違いである。`records-for` が全 record に押す `:actorDid` は
@@ -66,7 +66,7 @@ collection を宛先にしている**。
 ### 3. runtime と UI の記述が割れている
 
 - manifest: `runtime` = `k8s-langserver`、`uiType` = `yoro`
-- `CLAUDE.md`: Runtime = Single Worker、UI = appview (Protocol Canvas card UI)
+- `AGENTS.md`: Runtime = Single Worker、UI = appview (Protocol Canvas card UI)
 
 ## Decision
 
@@ -80,7 +80,7 @@ collection を宛先にしている**。
   既に発行された record の帰属か、どちらかが動く。
 - collection を揃えるなら、`:ready` な plan の宛先が変わる —— これは
   この repo の**振る舞い**の変更であって、docs の変更ではない。
-- `CLAUDE.md` は上流デプロイの説明かもしれず、その場合 manifest と食い違って
+- `AGENTS.md` は上流デプロイの説明かもしれず、その場合 manifest と食い違って
   いること自体は誤りではない。
 
 したがってこの反復では、README と `docs/operator-quickstart.md` に
@@ -105,4 +105,4 @@ collection を宛先にしている**。
   ので docs 反復の範囲外。振る舞いの変更として別途起票する。
 - **DID を揃える** —— 公開済み DID document か record の帰属が動く。owner 判断。
 - **黙っておく** —— 却下。未測定を 0 として蓄積するのと同じで、次に読む者が
-  『配線済み』と誤読する。実際 `CLAUDE.md` だけを読むとそう読める。"}]
+  『配線済み』と誤読する。実際 `AGENTS.md` だけを読むとそう読める。"}]
