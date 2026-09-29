@@ -215,7 +215,7 @@ update `docs/adr/0001-three-planes-disagree.edn` and this section together.
 
 ## 6. What this quickstart deliberately does not cover
 
-`CLAUDE.md` documents a deployed vehicle-intelligence platform: ~40,000 WMI
+`AGENTS.md` documents a deployed vehicle-intelligence platform: ~40,000 WMI
 codes, a 13-label SQL graph, 12 MCP commands, seed cron schedules, WIT exports
 and a max-flow path planner. **None of that is in this repository** and none of
 it is reachable from here. This quickstart stops at the boundary because the
